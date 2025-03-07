@@ -55,7 +55,6 @@ option(LLAMA_STATIC                     "llama: static link libraries"          
 option(LLAMA_NATIVE                     "llama: enable -march=native flag"                      ON)
 option(LLAMA_LTO                        "llama: enable link time optimization"                  OFF)
 option(LLAMA_CCACHE                     "llama: use ccache if available"                        ON)
-
 # debug
 option(LLAMA_ALL_WARNINGS               "llama: enable all compiler warnings"                   ON)
 option(LLAMA_ALL_WARNINGS_3RD_PARTY     "llama: enable all compiler warnings in 3rd party libs" OFF)
@@ -147,6 +146,9 @@ option(LLAMA_LSX                             "llama: enable lsx"                
 # add perf arguments
 option(LLAMA_PERF                            "llama: enable perf"                               OFF)
 
+# wwx: add option for iqk mulmat
+option(GGML_IQK_MUL_MAT                     "ggml: use optimized iqk matrix multiplications"  ON)
+add_compile_definitions(GGML_USE_IQK_MULMAT)
 # Required for relocatable CMake package
 include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/build-info.cmake)
 
@@ -1299,6 +1301,10 @@ add_library(llama
             unicode.cpp
             unicode-data.cpp
             )
+# wwx: add llamafile
+target_include_directories(llama PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/../llamafile
+        )
 
 target_include_directories(llama PUBLIC .)
 target_compile_features   (llama PUBLIC cxx_std_11) # don't bump
